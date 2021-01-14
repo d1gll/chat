@@ -21,7 +21,7 @@ class m200923_144556_create_converts_table extends Migration
             'text' => $this->string(255)->notNull(),
             'rules' => $this->string(255)->notNull(),
             'tdata' => $this->string(32)->notNull(),
-            'access' => $this->boolean()->notNull(),
+            'access' => $this->boolean()->defaultValue(true),
         ], $tableOptions);
     }
 
