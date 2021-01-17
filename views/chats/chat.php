@@ -204,7 +204,7 @@ use yii\helpers\HtmlPurifier;
 
                                             <?= Html::endForm() ?>
 
-                                            <p><?php echo $faults['text'] ?></p>
+                                            <p><?php echo Html::encode($faults['text']) ?></p>
 
                                             <hr>
 
