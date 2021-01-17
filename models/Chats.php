@@ -13,7 +13,7 @@ class Chats extends ActiveRecord
     }
 
 
-    public static function onCheck($id){
+    public function onCheck($id){
 
         $message = self::findOne(['id' => $id]);
         if($message){
@@ -25,7 +25,7 @@ class Chats extends ActiveRecord
 
     }
 
-    public static function onAdd($id){
+    public function onAdd($id){
 
         $message = self::findOne(['id' => $id]);
         if($message){
@@ -37,7 +37,7 @@ class Chats extends ActiveRecord
 
     }
 
-    public static function onDelete($id){
+    public function onDelete($id){
 
         $message = self::findOne(['id' => $id]);
         if($message){
@@ -47,7 +47,5 @@ class Chats extends ActiveRecord
         return false;
 
     }
-
-
 
 }

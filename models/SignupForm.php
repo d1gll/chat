@@ -2,8 +2,10 @@
 
 namespace app\models;
 
+use app\components\behaviors\PurifyBehavior;
 use Yii;
 use yii\base\Model;
+use yii\helpers\HtmlPurifier;
 
 /**
  * Signup form
@@ -43,14 +45,25 @@ class SignupForm extends Model
         ];
     }
 
+    public function behaviors()
+    {
+        return [
+            'purify' => [
+                'class' => PurifyBehavior::className(),
+                'attributes' => ['username','email','password'],
+            ]
+        ];
+    }
+
 
     public function signup()
     {
+
         if (!$this->validate()) {
             return null;
         }
         $auth = Yii::$app->security->generateRandomString();
-        Yii::$app
+        $send = Yii::$app
             ->mailer
             ->compose(
                 ['html' => 'letterForAdmin-html', 'text' => 'letterForAdmin-text'],
@@ -60,24 +73,25 @@ class SignupForm extends Model
             ->setTo($this->email)
             ->setSubject('Подтверждение email')
             ->send();
+        if ($send) {
+            $user = new User();
+            $user->username = $this->username;
+            $user->email = $this->email;
+            $user->status = User::STATUS_DELETED;
+            $user->setPassword($this->password);
+            $user->auth_key = $auth;
+            $user->save();
 
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->status = User::STATUS_DELETED;
-        $user->setPassword($this->password);
-        $user->auth_key = $auth;
-        $user->save();
-
-        if ($user)
-           {
+            if ($user) {
 
                 $auth = Yii::$app->authManager;
                 $editor = $auth->getRole('editor'); // Получаем роль editor
                 $auth->assign($editor, $user->id); // Назначаем пользователю, которому принадлежит модель User
                 return $user;
 
-           }
+            }
+            return null;
+        }
         return null;
     }
 

@@ -41,7 +41,7 @@ AppAsset::register($this);
 
     ];
 
-    $menuItems[] = ['label' => 'Чат', 'url' => ['/site/chat']];
+    $menuItems[] = ['label' => 'Чат', 'url' => ['/chats/chat']];
 
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Регистрация', 'url' => ['/site/signup']];

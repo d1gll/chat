@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\behaviors\PurifyBehavior;
 use Yii;
 use yii\base\Model;
 
@@ -44,6 +45,17 @@ class LoginForm extends Model
 
         ];
     }
+
+    public function behaviors()
+    {
+        return [
+            'purify' => [
+                'class' => PurifyBehavior::className(),
+                'attributes' => ['username', 'password'],
+            ]
+        ];
+    }
+
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {

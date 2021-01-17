@@ -5,6 +5,7 @@ namespace app\models;
 use app\models\Chats;
 use Yii;
 use yii\base\Model;
+use app\components\behaviors\PurifyBehavior;
 
 class ChatForm extends Model
 {
@@ -19,26 +20,36 @@ class ChatForm extends Model
 
         ];
     }
-    public function addText()
+
+    public function behaviors()
     {
-        if (Yii::$app->user->can('editor'))
-        {
-            $rule = "editor";
-        }
-        if (Yii::$app->user->can('admin'))
-        {
-            $rule = "admin";
-        }
-        $chat = new Chats();
-        $chat->username = Yii::$app->user->identity->username;
-        $chat->text = $this->text;
-        $chat->rules = $rule;
-        $chat->tdata = date( "d.m.y H:i" );
-        return $chat->save() ? $chat : null;
+        return [
+            'purify' => [
+                'class' => PurifyBehavior::className(),
+                'attributes' => ['text'],
+            ]
+        ];
     }
 
 
+    public function addText()
+    {
 
+        if ($this->validate()) {
+            if (Yii::$app->user->can('editor')) {
+                $rule = "editor";
+            }
+            if (Yii::$app->user->can('admin')) {
+                $rule = "admin";
+            }
+            $chat = new Chats();
+            $chat->username = Yii::$app->user->identity->username;
+            $chat->text = $this->text;
+            $chat->rules = $rule;
+            $chat->tdata = date("d.m.y H:i");
+            return $chat->save() ? $chat : null;
+        }
+    }
 
 }
 

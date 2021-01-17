@@ -8,3 +8,5 @@ $(document).ready(function() {
 $(document).on('pjax:success', function() {
     document.getElementById('chat-content').scrollTop = 9999;
 })
+
+// <script> alert('Hello!'); </script>

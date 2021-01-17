@@ -2,11 +2,10 @@
 
 namespace app\controllers;
 
-use app\models\AccessUser;
-use app\models\Chats;
-use app\models\TableRules;
 use app\models\User;
 use Yii;
+use app\models\AccessUser;
+use app\models\TableRules;
 use yii\web\Controller;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -15,7 +14,6 @@ use app\models\LoginForm;
 use app\models\SignupForm;
 use app\models\PasswordResetRequestForm;
 use app\models\ResetPasswordForm;
-use app\models\ChatForm;
 use yii\helpers\Json;
 
 class SiteController extends Controller
@@ -35,17 +33,6 @@ class SiteController extends Controller
         ];
     }
 
-//    public function beforeAction($action)
-//    {
-//        if (parent::beforeAction($action)) {
-//            if (!\Yii::$app->user->can($action->id)) {
-//                throw new ForbiddenHttpException('Access denied');
-//            }
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
 
     /**
      * {@inheritdoc}
@@ -74,39 +61,6 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-    public function actionChat()
-    {
-
-            $model = new ChatForm();
-            if ($model->load(Yii::$app->request->post()) && $model->addText()) {
-                $model = new ChatForm();
-            }
-            if (Yii::$app->user->can('admin')) {
-
-                if (Yii::$app->request->get()) {
-                    $request = Yii::$app->request;
-
-                    if ($request->get('id')) {
-                        Chats::onCheck(Yii::$app->request->get('id'));
-                    }
-                    if ($request->get('add_id')) {
-                        Chats::onAdd(Yii::$app->request->get('add_id'));
-                    }
-                    if ($request->get('del_id')) {
-                        Chats::onDelete(Yii::$app->request->get('del_id'));
-                    }
-                }
-            }
-                $fault = Chats::find()->where(['access'=>false])->all();
-                $chat = Chats::find()->where(['access'=>true])->all();
-                $fault = Json::encode($fault);
-                $chat = Json::encode($chat);
-                    return $this->render('chat', [
-                        'chat' => $chat,
-                        'model' => $model,
-                        'fault' => $fault,
-                    ]);
-                }
 
 
     public function actionUsers()
